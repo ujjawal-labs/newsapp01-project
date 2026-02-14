@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Daily X - Bespoke Dark Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Bespoke Color Palette Integration:
+        * Primary Accent (Highlight/Active): #a98ab5 (Muted Lavender)
+        * Text Color (Light/Primary): #f4efdb (Very Pale Cream)
+        * Subtle Accent/Link: #a1a4b0 (Muted Gray/Slate)
+        * Secondary Accent (CTA/Action): #b6323c (Deep Red/Maroon)
+        * Base Background: #12121e (Very Deep Navy/Charcoal)
+        * Card Background: #1f2238 (Darker Blue-Gray)
+        */
+
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #12121e; /* Deep Navy/Charcoal */
+            margin: 0;
+            padding: 0;
+            color: #f4efdb; /* Pale Cream text */
+            min-height: 100vh;
+            transition: padding-top 0.5s ease;
+        }
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Header & Title --- */
+        .header-content {
+            background-color: #12121e;
+            padding-bottom: 20px;
+        }
+        .main-title-section {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin: 0;
+            /* Title: Use the Cream text color for high contrast */
+            color: #f4efdb; 
+            letter-spacing: -1.5px;
+            text-align: left;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #a98ab5; /* Muted Lavender for the tag line */
+            margin: 0;
+            text-align: right;
+            border-bottom: 2px solid #1f2238; /* Darker card color as separator */
+            padding-bottom: 5px;
+        }
+        
+        /* --- Search Bar Styles --- */
+        .search-container {
+            position: relative;
+            margin: 0 0 30px 0;
+            max-width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+        }
+        .search-container input {
+            width: 100%;
+            height: 55px; 
+            padding: 0 50px 0 25px;
+            border: 1px solid #a98ab5; /* Lavender border */
+            border-radius: 8px;
+            font-size: 17px;
+            background: #1f2238; /* Darker Blue-Gray for input */
+            color: #f4efdb; /* Pale Cream text */
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .search-container input::placeholder {
+            color: #a1a4b0; /* Muted Slate placeholder text */
+        }
+        .search-container input:focus {
+            border-color: #f4efdb;
+            box-shadow: 0 0 10px rgba(169, 138, 181, 0.8); /* Lavender glow */
+        }
+        .search-container i {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a98ab5; /* Muted Lavender icon */
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        /* Fixed Header Styles */
+        body.search-mode .header-content {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1400px;
+            background: #12121e;
+            padding: 15px 30px;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+        body.search-mode .container {
+            padding-top: 100px;
+        }
+        body.search-mode .main-title-section, 
+        body.search-mode .category-container {
+            display: none;
+        }
+
+
+        /* --- Category Buttons --- */
+        .category-container {
+            margin-bottom: 30px;
+            padding: 0;
+            border-bottom: 2px solid #1f2238;
+            text-align: left;
+        }
+        .button-row {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+        button {
+            height: 38px;
+            padding: 0 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1f2238; /* Darker Blue-Gray for buttons */
+            color: #ffffff; /* Muted Slate text */
+            border: 1px solid #1f2238;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+            background: #12121e; /* Match main background on hover */
+            color: #a98ab5; /* Muted Lavender on hover */
+            border-color: #a98ab5;
+            box-shadow: 0 4px 8px rgba(169, 138, 181, 0.3);
+        }
+        button.active {
+            background: #a98ab5; /* Muted Lavender for active state */
+            color: #12121e; /* Dark text on light button */
+            border-color: #a98ab5;
+            box-shadow: 0 0 10px rgba(169, 138, 181, 0.8);
+            transform: none;
+        }
+
+        /* --- News Grid & Items --- */
+        #news-container {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 30px;
+        }
+        .news-item {
+            background: #1f2238; /* Darker Blue-Gray for cards */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #1f2238;
+        }
+        .news-item:hover {
+            transform: translateY(-5px) scale(1.03); 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #a98ab5; /* Lavender border on hover */
+        }
+        .news-item img {
+            width: 100%;
+            height: 200px; 
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .news-item:hover img {
+            transform: scale(1.05);
+        }
+        .news-item-content {
+            padding: 25px; 
+            text-align: left;
+        }
+        .news-item-content h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: #f4efdb; /* Pale Cream text */
+        }
+        .news-item-content p {
+            font-size: 15px;
+            color: #a1a4b0; /* Muted Slate for descriptions */
+            line-height: 1.5;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            margin-bottom: 20px;
+        }
+        .news-item-content a {
+            color: #f4efdb; /* Pale Cream text */
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+            padding: 8px 18px;
+            background: #b6323c; /* Deep Red/Maroon for Read More CTA */
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            box-shadow: 0 2px 5px rgba(182, 50, 60, 0.5);
+        }
+        .news-item-content a:hover {
+            background: #a98ab5; /* Lavender on hover for softer transition */
+            color: #12121e;
+            transform: none;
+            box-shadow: 0 4px 8px rgba(169, 138, 181, 0.7);
+        }
+
+        /* --- Loading & Error Styles (Updated for Bespoke Dark Mode) --- */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #1f2238; 
+            border-top: 3px solid #a98ab5; /* Lavender spinner */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #a1a4b0; /* Muted Slate text */
+        }
+        .error {
+            font-size: 1.1rem;
+            color: #f4efdb; /* Pale Cream text on dark red background */
+            padding: 30px;
+            background: #b6323c; /* Deep Red error background */
+            border-radius: 8px;
+            text-align: center;
+            grid-column: 1 / -1;
+            margin: 40px auto;
+            width: 70%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 900px) {
+            #news-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            h1 {
+                font-size: 3rem;
+            }
+            .subtitle {
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 5px;
+            }
+            .main-title-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .subtitle {
+                text-align: left;
+                margin-left: 5px;
+            }
+            .search-container input {
+                height: 50px;
+            }
+            .container {
+                padding: 20px 10px;
+            }
+            body.search-mode .container {
+                padding-top: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-content">
+            <div class="main-title-section">
+                <h1>The Daily X</h1>
+                <p class="subtitle" style="color: aliceblue;">Your Gateway to the World's Stories</p>
+            </div>
+            
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Search articles, topics, or places..." 
+                    onfocus="enterSearchMode()" 
+                    onblur="checkExitSearchMode()"
+                    onkeypress="handleKeyPress(event)" 
+                />
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <div id="main-category-buttons" class="category-container">
+            <div class="button-row">
+                <button id="world-news">🌍 Worldwide News</button>
+                <button id="india-news">🇮🇳 Indian News</button>
+                <button id="ghaziabad-news">🏙️ Ghaziabad News</button>
+            </div>
+        </div>
+        <div id="sub-category-buttons" class="category-container">
+            <div class="button-row">
+                </div>
+        </div>
+        <div id="news-container"></div>
+    </div>
+    <script>
+        const MAIN_CATEGORIES_MAP = {
+            "world": ["General", "Sports", "Science", "Technology", "Business"],
+            "india": ["General", "Politics", "Business", "Entertainment", "Culture"],
+            "ghaziabad": ["General", "Local-Crime", "Infrastructure", "Events", "Local-Biz"]
+        };
+        let activeMainCategory = "world";
+        const body = document.body;
+        const searchInput = document.getElementById("search-input");
+        const mainCatContainer = document.getElementById("main-category-buttons");
+        const subCatContainer = document.getElementById("sub-category-buttons");
+
+        // --- Helper: sort articles by newest date first ---
+        function sortArticlesByDate(articles) {
+            return [...articles].sort((a, b) => {
+                const dateA = new Date(a.publishedAt || a.date || 0);
+                const dateB = new Date(b.publishedAt || b.date || 0);
+                return dateB - dateA; // newest first
+            });
+        }
+
+        // --- Search Mode Logic ---
+        function enterSearchMode() {
+            body.classList.add('search-mode');
+            // Show prompt when focus is gained and input is empty
+            if (!searchInput.value.trim()) {
+                document.getElementById("news-container").innerHTML = `
+                    <p style="text-align:center; color:#a1a4b0; font-size:1.5rem; padding-top:100px; grid-column: 1 / -1;">
+                        Start typing your search query above to find specific articles.
+                    </p>
+                    `;
+            }
+        }
+
+        function exitSearchMode() {
+            // Only exit search mode if we are currently in it
+            if (body.classList.contains('search-mode')) {
+                body.classList.remove('search-mode');
+                // Re-load the currently active category view
+                setActiveCategory(activeMainCategory); 
+            }
+        }
+
+        function checkExitSearchMode() {
+            // If the search bar is empty when focus is lost, revert to category mode
+            if (!searchInput.value.trim()) {
+                // Delay slightly to prevent the onblur from fighting with a button click
+                setTimeout(exitSearchMode, 100); 
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                    searchInput.blur(); // Remove focus after search
+                }
+            }
+        }
+
+        async function performSearch(query) {
+            enterSearchMode(); // Ensure UI is in search mode
+            const container = document.getElementById("news-container");
+            container.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Searching for: **${query}**</p>
+                </div>
+            `;
+            
+            try {
+                // Call the new /search endpoint
+                const response = await fetch(`http://127.0.0.1:5000/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                if (!data.articles || data.articles.length === 0) {
+                    container.innerHTML = `<p class="error">No news found for "**${query}**". Try a different search term or click a category button.</p>`;
+                    return;
+                }
+                
+                // Sort by newest first
+                const sortedArticles = sortArticlesByDate(data.articles);
+                renderArticles(container, sortedArticles);
+
+            } catch (err) {
+                container.innerHTML = `<p class="error">Error connecting to news server. Ensure the **Python backend** is running on port 5000. Error: ${err.message}</p>`;
+            }
+        }
+        
+        // --- Category Logic ---
+        document.getElementById("world-news").addEventListener("click", () => setActiveCategory("world"));
+        document.getElementById("india-news").addEventListener("click", () => setActiveCategory("india"));
+        document.getElementById("ghaziabad-news").addEventListener("click", () => setActiveCategory("ghaziabad"));
+        
+        function setActiveCategory(mainCategory) {
+            // Ensure search mode is off when setting a category
+            body.classList.remove('search-mode'); 
+            activeMainCategory = mainCategory;
+            
+            // 1. Update main button styling
+            document.querySelectorAll('#main-category-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`${mainCategory}-news`).classList.add('active');
+            
+            // 2. Generate sub-category buttons
+            const subCategories = MAIN_CATEGORIES_MAP[mainCategory];
+            generateSubCategoryButtons(mainCategory, subCategories);
+            
+            // 3. Load news for the first sub-category (e.g., "General")
+            fetchNews(mainCategory, subCategories[0]);
+        }
+        
+        function generateSubCategoryButtons(mainCategory, subCategories) {
+            const subContainer = document.querySelector("#sub-category-buttons .button-row");
+            
+            subContainer.innerHTML = subCategories.map(sub =>
+                `<button id="sub-${sub.replace(' ', '-')}" onclick="fetchNews('${mainCategory}', '${sub}')">${sub.replace('-', ' ')}</button>`
+            ).join('');
+        }
+
+        // --- MAIN FETCH FUNCTION (Category View) ---
+        async function fetchNews(mainCategory, subCategory) {
+            // This prevents category fetching if the user is currently in search mode
+            if (body.classList.contains('search-mode')) return; 
+
+            const container = document.getElementById("news-container");
+            container.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Loading ${subCategory.replace('-', ' ')} news...</p>
+                </div>
+            `;
+            
+            // Highlight active sub-category button
+            document.querySelectorAll('#sub-category-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const subId = `sub-${subCategory.replace(' ', '-')}`;
+            const activeSubButton = document.getElementById(subId);
+            if(activeSubButton) {
+                activeSubButton.classList.add('active');
+            }
+            
+            try {
+                // Request URL includes BOTH categories: main and sub
+                const response = await fetch(`http://127.0.0.1:5000/news?main=${mainCategory}&sub=${subCategory}`);
+                const data = await response.json();
+
+                if (!data.articles || data.articles.length === 0) {
+                    container.innerHTML = `<p class="error">No news found for this sub-category. Try another source or category.</p>`;
+                    return;
+                }
+                
+                // Sort by newest first
+                const sortedArticles = sortArticlesByDate(data.articles);
+                renderArticles(container, sortedArticles);
+
+            } catch (err) {
+                container.innerHTML = `<p class="error">Error connecting to news server. Ensure the **Python backend** is running on port 5000. Error: ${err.message}</p>`;
+            }
+        }
+        
+        // --- Shared Article Renderer ---
+        function renderArticles(container, articles) {
+            // Placeholder image URL with the bespoke color for consistency
+            const placeholderImage = 'https://via.placeholder.com/400x200/1f2238/a98ab5?text=Image+Not+Available';
+            
+            container.innerHTML = articles.map(article => `
+                <div class="news-item">
+                    <img src="${article.urlToImage || placeholderImage}" alt="News image">
+                    <div class="news-item-content">
+                        <h2>${article.title}</h2>
+                        <p>${article.description || 'Click to read the full article.'}</p>
+                        <a href="${article.url}" target="_blank"><i class="fas fa-arrow-right"></i> Read More</a>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // Initial page load: set 'Worldwide News' as active
+        document.addEventListener("DOMContentLoaded", () => {
+            setActiveCategory("world");
+        });
+    </script>
+</body>
+</html>
